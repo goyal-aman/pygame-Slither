@@ -1,0 +1,108 @@
+import pygame
+pygame.init()
+import time
+import random
+
+def gameloop():
+    x_width, y_width = 500, 500
+    win = pygame.display.set_mode((x_width, y_width))
+    pygame.display.set_caption("Snake")
+
+    bgcolor = white = (255, 255, 255)
+    red = (255, 0, 0)
+    green = (0, 255, 0)
+    blue = (0, 0, 255)
+    black = (0, 0, 0)
+
+    x_cord, y_cord = x_width/2, y_width/2
+    width, height = 10, 10
+    x_snake_change, y_snake_change = 10,10
+
+
+    font = pygame.font.SysFont(None, 20)
+    def gameover_message(msg, color):
+        text_on_screen = font.render(msg, True, color)
+        win.blit(text_on_screen, [x_width/4, y_width/3])
+        pygame.display.update()
+
+
+    rand_apple_x = round(random.randrange(0, x_width-width)/10)*10
+    rand_apple_y = round(random.randrange(0, y_width-height)/10)*10
+    def apple():
+        win.fill(red, rect=[rand_apple_x,rand_apple_y, width, height])
+
+    snake_list=[]
+    snake_length = 1
+
+    def snake():
+        if len(snake_list) > snake_length:
+            del snake_list[0]
+            for XnY in snake_list[:-1]:
+                win.fill(black, rect=[XnY[0], XnY[1], width, height])
+
+    run = True
+    gameover = False
+    while run:
+        while gameover:
+            gameover_message("You Have LOSE, press c to continue and Q to quit", red)
+            for event in pygame.event.get():
+                key_press = pygame.key.get_pressed()
+                if key_press[pygame.K_c]:
+                    gameloop()
+                if key_press[pygame.K_q]:
+                    win.fill(white)
+                    gameover_message("QUITTING", black)
+                    time.sleep(1)
+                    run = False
+                    pygame.quit()
+                    quit()
+
+        for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        # Bg-Color
+        win.fill(bgcolor)
+
+        # key_press
+
+        key_press = pygame.key.get_pressed()
+        if key_press[pygame.K_DOWN]:# and y_cord < y_width - height:
+            y_cord += y_snake_change
+        if key_press[pygame.K_RIGHT]:# and x_cord < x_width - width:
+            x_cord += x_snake_change
+        if key_press[pygame.K_UP]:# and y_cord >0 :
+            y_cord -= y_snake_change
+        if key_press[pygame.K_LEFT]:# and x_cord > 0:
+            x_cord -= x_snake_change
+
+
+        if x_cord > x_width or x_cord < 0 or y_cord < 0 or y_cord > y_width:
+            gameover = True
+
+
+        # apple
+        apple()
+        #  cords apple
+        if x_cord == rand_apple_x and y_cord == rand_apple_y:
+            rand_apple_x = round(random.randrange(0, x_width - width) / 10) * 10
+            rand_apple_y = round(random.randrange(0, y_width - height) / 10) * 10
+            snake_length += 1
+        snake_XnY_cord = []
+        snake_XnY_cord.append(x_cord)
+        snake_XnY_cord.append(y_cord)
+        snake_list.append(snake_XnY_cord)
+
+
+        snake()
+
+        # snake
+        win.fill(black, rect=[x_cord, y_cord, width, height])
+
+        pygame.display.update()
+
+        time.sleep(0.05)
+    pygame.quit()
+    quit()
+gameloop()
