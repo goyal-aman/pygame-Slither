@@ -18,6 +18,9 @@ def gameloop():
     width, height = 10, 10
     x_snake_change, y_snake_change = 10,10
 
+    apple_width = 15
+    apple_height = 15
+
 
     font = pygame.font.SysFont(None, 20)
     def gameover_message(msg, color):
@@ -29,7 +32,7 @@ def gameloop():
     rand_apple_x = round(random.randrange(0, x_width-width)/10)*10
     rand_apple_y = round(random.randrange(0, y_width-height)/10)*10
     def apple():
-        win.fill(red, rect=[rand_apple_x,rand_apple_y, width, height])
+        win.fill(red, rect=[rand_apple_x,rand_apple_y, apple_width, apple_height])
 
     snake_list=[]
     snake_length = 1
@@ -78,14 +81,16 @@ def gameloop():
             x_cord -= x_snake_change
 
 
-        if x_cord > x_width or x_cord < 0 or y_cord < 0 or y_cord > y_width:
+        if x_cord > x_width - width or x_cord < 0 or y_cord < 0 or y_cord > y_width - height:
             gameover = True
 
 
         # apple
         apple()
-        #  cords apple
-        if x_cord == rand_apple_x and y_cord == rand_apple_y:
+
+
+        #  cords apple //   Apple Funciton
+        if x_cord >= rand_apple_x and x_cord<=rand_apple_x + apple_width and y_cord >= rand_apple_y  and y_cord <= rand_apple_y + apple_height  :
             rand_apple_x = round(random.randrange(0, x_width - width) / 10) * 10
             rand_apple_y = round(random.randrange(0, y_width - height) / 10) * 10
             snake_length += 1
